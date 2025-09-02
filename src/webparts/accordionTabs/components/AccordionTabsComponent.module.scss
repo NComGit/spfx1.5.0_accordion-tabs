@@ -1,4 +1,4 @@
-@import '~office-ui-fabric-react/dist/sass/References.scss';
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
 
 .accordionTabsComponent {
   width: 100%;
@@ -37,19 +37,19 @@
         font-size: 24px;
         font-weight: 600;
         margin: 0 0 12px 0;
-        color: $ms-color-neutralDark;
+        color: "[theme:neutralDark, default: #323130]";
       }
       
       .emptyDescription {
         font-size: 16px;
-        color: $ms-color-neutralSecondary;
+        color: "[theme:neutralSecondary, default: #605e5c]";
         line-height: 1.5;
         margin: 0 0 24px 0;
       }
       
       .configureButton {
-        background-color: $ms-color-themePrimary;
-        color: $ms-color-white;
+        background-color: "[theme:themePrimary, default: #0078d4]";
+        color: "[theme:white, default: #ffffff]";
         border: none;
         border-radius: 2px;
         padding: 12px 24px;
@@ -59,15 +59,15 @@
         transition: background-color 0.2s ease-in-out;
         
         &:hover {
-          background-color: $ms-color-themeDark;
+          background-color: "[theme:themeDark, default: #106ebe]";
         }
         
         &:active {
-          background-color: $ms-color-themeDarker;
+          background-color: "[theme:themeDarker, default: #005a9e]";
         }
         
         &:focus {
-          outline: 2px solid $ms-color-themePrimary;
+          outline: 2px solid "[theme:themePrimary, default: #0078d4]";
           outline-offset: 2px;
         }
       }
@@ -80,8 +80,8 @@
   .accordionTabsComponent {
     // Ensure consistent styling across all content areas
     .mce-content-body {
-      font-family: $ms-font-family-base;
-      font-size: $ms-font-size-m;
+      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif;
+      font-size: 14px;
       line-height: 1.6;
     }
     
@@ -112,8 +112,8 @@
     
     // Style code blocks
     pre, code {
-      background-color: $ms-color-neutralLighter;
-      border: 1px solid $ms-color-neutralLight;
+      background-color: "[theme:neutralLighter, default: #f3f2f1]";
+      border: 1px solid "[theme:neutralLight, default: #edebe9]";
       border-radius: 3px;
       font-family: 'Courier New', Courier, monospace;
       font-size: 13px;
@@ -137,37 +137,37 @@
       margin: 16px 0;
       
       th, td {
-        border: 1px solid $ms-color-neutralLight;
+        border: 1px solid "[theme:neutralLight, default: #edebe9]";
         padding: 8px 12px;
         text-align: left;
         vertical-align: top;
       }
       
       th {
-        background-color: $ms-color-neutralLighter;
+        background-color: "[theme:neutralLighter, default: #f3f2f1]";
         font-weight: 600;
       }
       
       tr:nth-child(even) {
-        background-color: $ms-color-neutralLighterAlt;
+        background-color: "[theme:neutralLighterAlt, default: #faf9f8]";
       }
     }
     
     // Style blockquotes
     blockquote {
-      border-left: 4px solid $ms-color-themePrimary;
+      border-left: 4px solid "[theme:themePrimary, default: #0078d4]";
       margin: 16px 0;
       padding: 8px 0 8px 16px;
-      color: $ms-color-neutralSecondary;
+      color: "[theme:neutralSecondary, default: #605e5c]";
       font-style: italic;
-      background-color: $ms-color-neutralLighterAlt;
+      background-color: "[theme:neutralLighterAlt, default: #faf9f8]";
     }
     
     // Style horizontal rules
     hr {
       border: none;
       height: 1px;
-      background-color: $ms-color-neutralLight;
+      background-color: "[theme:neutralLight, default: #edebe9]";
       margin: 20px 0;
     }
   }

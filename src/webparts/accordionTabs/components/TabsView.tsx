@@ -2,15 +2,9 @@ import * as React from 'react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { DisplayMode } from '@microsoft/sp-core-library';
-import { ITabsViewProps, ISection } from '../models/IAccordionTabsModels';
+import { ITabsViewProps, ITabsViewState, ISection } from '../models/IAccordionTabsModels';
 import { SectionEditor } from './SectionEditor';
 import styles from './TabsView.module.scss';
-
-interface ITabsViewState {
-  activeTabIndex: number;
-  editingSection: ISection | null;
-  showSectionEditor: boolean;
-}
 
 /**
  * Tabs view component that displays sections in tab format

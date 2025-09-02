@@ -2,17 +2,9 @@ import * as React from 'react';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { Modal } from 'office-ui-fabric-react/lib/Modal';
-import { ISectionEditorProps } from '../models/IAccordionTabsModels';
-import { ISection } from '../models/IAccordionTabsModels';
+import { ISectionEditorProps, ISectionEditorState, ISection } from '../models/IAccordionTabsModels';
 import { TinyMCEEditor } from './TinyMCEEditor';
 import styles from './SectionEditor.module.scss';
-
-interface ISectionEditorState {
-  title: string;
-  content: string;
-  isLoading: boolean;
-  hasChanges: boolean;
-}
 
 /**
  * Section Editor component for editing individual accordion/tab sections

@@ -98,15 +98,16 @@ export class TinyMCEEditor extends React.Component<ITinyMCEEditorProps, {}> {
       // Disable automatic uploads and file picker for security
       automatic_uploads: false,
       file_picker_types: 'image',
-      file_picker_callback: (cb: any, value: any, meta: any) => {
+      file_picker_callback: (cb: any, pickerValue: any, meta: any) => {
         // Simple file picker - in production, you'd want more sophisticated handling
         const input = document.createElement('input');
         input.setAttribute('type', 'file');
         input.setAttribute('accept', 'image/*');
-        input.onchange = function(this: HTMLInputElement) {
-          const file = this.files![0];
+        input.onchange = (event: Event) => {
+          const target = event.target as HTMLInputElement;
+          const file = target.files![0];
           const reader = new FileReader();
-          reader.onload = function() {
+          reader.onload = () => {
             cb(reader.result, { alt: file.name });
           };
           reader.readAsDataURL(file);

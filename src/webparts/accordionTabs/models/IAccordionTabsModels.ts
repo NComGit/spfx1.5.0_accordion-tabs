@@ -94,3 +94,40 @@ export interface IAccordionTabsState {
   isLoading: boolean;
   error: string | null;
 }
+
+/**
+ * Interface for AccordionTabsComponent state
+ */
+export interface IAccordionTabsComponentState {
+  isLoading: boolean;
+  error: string | null;
+  sections: ISection[];
+}
+
+/**
+ * Interface for AccordionView state
+ */
+export interface IAccordionViewState {
+  expandedSections: { [key: string]: boolean };
+  editingSection: ISection | null;
+  showSectionEditor: boolean;
+}
+
+/**
+ * Interface for TabsView state
+ */
+export interface ITabsViewState {
+  activeTabIndex: number;
+  editingSection: ISection | null;
+  showSectionEditor: boolean;
+}
+
+/**
+ * Interface for SectionEditor state
+ */
+export interface ISectionEditorState {
+  title: string;
+  content: string;
+  isLoading: boolean;
+  hasChanges: boolean;
+}

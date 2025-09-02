@@ -2,15 +2,9 @@ import * as React from 'react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { DisplayMode } from '@microsoft/sp-core-library';
-import { IAccordionViewProps, ISection } from '../models/IAccordionTabsModels';
+import { IAccordionViewProps, IAccordionViewState, ISection } from '../models/IAccordionTabsModels';
 import { SectionEditor } from './SectionEditor';
 import styles from './AccordionView.module.scss';
-
-interface IAccordionViewState {
-  expandedSections: { [key: string]: boolean };
-  editingSection: ISection | null;
-  showSectionEditor: boolean;
-}
 
 /**
  * Accordion view component that displays sections in collapsible accordion format

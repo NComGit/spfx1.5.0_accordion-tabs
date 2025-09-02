@@ -1,4 +1,4 @@
-@import '~office-ui-fabric-react/dist/sass/References.scss';
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
 
 .accordionTabs {
   .container {
@@ -19,20 +19,20 @@
   .title {
     font-size: 21px;
     font-weight: 600;
-    color: $ms-color-neutralDark;
+    color: "[theme:neutralDark, default: #323130]";
     margin-bottom: 8px;
   }
 
   .subTitle {
     font-size: 17px;
     font-weight: 300;
-    color: $ms-color-neutralDark;
+    color: "[theme:neutralDark, default: #323130]";
     margin-bottom: 12px;
   }
 
   .description {
     font-size: 14px;
-    color: $ms-color-neutralSecondary;
+    color: "[theme:neutralSecondary, default: #605e5c]";
     margin-bottom: 16px;
     line-height: 1.5;
   }
@@ -41,9 +41,9 @@
     text-decoration: none;
     height: 32px;
     min-width: 80px;
-    background-color: $ms-color-themePrimary;
-    border-color: $ms-color-themePrimary;
-    color: $ms-color-white;
+    background-color: "[theme:themePrimary, default: #0078d4]";
+    border-color: "[theme:themePrimary, default: #0078d4]";
+    color: "[theme:white, default: #ffffff]";
     outline: transparent;
     position: relative;
     font-family: inherit;
@@ -64,17 +64,17 @@
       height: 32px;
       line-height: 32px;
       margin: 0;
-      color: $ms-color-white;
+      color: "[theme:white, default: #ffffff]";
     }
 
     &:hover {
-      background-color: $ms-color-themeDark;
-      border-color: $ms-color-themeDark;
+      background-color: "[theme:themeDark, default: #106ebe]";
+      border-color: "[theme:themeDark, default: #106ebe]";
     }
 
     &:active {
-      background-color: $ms-color-themeDarker;
-      border-color: $ms-color-themeDarker;
+      background-color: "[theme:themeDarker, default: #005a9e]";
+      border-color: "[theme:themeDarker, default: #005a9e]";
     }
   }
 }

@@ -148,7 +148,6 @@ Customize the editor in `TinyMCEEditor.tsx`:
 
 ## Browser Support
 
-- Internet Explorer 11+
 - Microsoft Edge
 - Chrome (latest)
 - Firefox (latest)
@@ -161,8 +160,6 @@ Customize the editor in `TinyMCEEditor.tsx`:
 ```bash
 gulp serve
 ```
-
-Access the workbench at `https://your-tenant.sharepoint.com/_layouts/15/workbench.aspx`
 
 ### Building for Production
 
@@ -221,21 +218,4 @@ The web part includes comprehensive error handling:
 4. Test thoroughly in SharePoint environment
 5. Submit pull request with detailed description
 
-## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For issues and questions:
-1. Check the troubleshooting section
-2. Review SharePoint Framework documentation
-3. Submit issues with detailed reproduction steps
-
-## Version History
-
-- **1.0.0**: Initial release with accordion/tabs functionality
-  - TinyMCE 4.x integration
-  - Dynamic section management
-  - Responsive design
-  - SPFx 1.5.0 compatibility

@@ -1,16 +1,10 @@
 import * as React from 'react';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react/lib/MessageBar';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
-import { IAccordionTabsProps, ViewType, ISection } from '../models/IAccordionTabsModels';
+import { IAccordionTabsProps, IAccordionTabsComponentState, ViewType, ISection } from '../models/IAccordionTabsModels';
 import { AccordionView } from './AccordionView';
 import { TabsView } from './TabsView';
 import styles from './AccordionTabsComponent.module.scss';
-
-interface IAccordionTabsComponentState {
-  isLoading: boolean;
-  error: string | null;
-  sections: ISection[];
-}
 
 /**
  * Main component that renders either accordion or tabs view based on configuration
@@ -137,7 +131,7 @@ export class AccordionTabsComponent extends React.Component<IAccordionTabsProps,
         {isLoading && this.renderLoadingState()}
         
         {!isLoading && !error && (
-          <>
+          <div>
             {sections.length === 0 && this.props.displayMode !== 2 /* Edit Mode */ ? (
               this.renderEmptyState()
             ) : (
@@ -145,7 +139,7 @@ export class AccordionTabsComponent extends React.Component<IAccordionTabsProps,
                 {this.renderContent()}
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
     );

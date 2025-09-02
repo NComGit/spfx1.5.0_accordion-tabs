@@ -1,15 +1,15 @@
-@import '~office-ui-fabric-react/dist/sass/References.scss';
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
 
 .modalContainer {
   .modalHeader {
     padding: 20px 20px 10px 20px;
-    border-bottom: 1px solid $ms-color-neutralLight;
+    border-bottom: 1px solid "[theme:neutralLight, default: #edebe9]";
     
     .modalTitle {
       font-size: 20px;
       font-weight: 600;
       margin: 0;
-      color: $ms-color-neutralDark;
+      color: "[theme:neutralDark, default: #323130]";
     }
   }
 
@@ -25,15 +25,15 @@
         display: block;
         font-weight: 600;
         margin-bottom: 8px;
-        color: $ms-color-neutralDark;
+        color: "[theme:neutralDark, default: #323130]";
       }
       
       .editorContainer {
-        border: 1px solid $ms-color-neutralTertiary;
+        border: 1px solid "[theme:neutralTertiary, default: #a19f9d]";
         border-radius: 2px;
         
         &:focus-within {
-          border-color: $ms-color-themePrimary;
+          border-color: "[theme:themePrimary, default: #0078d4]";
         }
       }
     }
@@ -41,7 +41,7 @@
 
   .modalFooter {
     padding: 15px 20px 20px 20px;
-    border-top: 1px solid $ms-color-neutralLight;
+    border-top: 1px solid "[theme:neutralLight, default: #edebe9]";
     text-align: right;
   }
 
@@ -59,7 +59,7 @@
     
     .spinner {
       font-size: 16px;
-      color: $ms-color-themePrimary;
+      color: "[theme:themePrimary, default: #0078d4]";
       font-weight: 600;
     }
   }
