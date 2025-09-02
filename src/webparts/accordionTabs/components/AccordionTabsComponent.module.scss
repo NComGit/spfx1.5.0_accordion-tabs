@@ -1,0 +1,237 @@
+@import '~office-ui-fabric-react/dist/sass/References.scss';
+
+.accordionTabsComponent {
+  width: 100%;
+  min-height: 100px;
+  
+  .contentContainer {
+    width: 100%;
+  }
+  
+  .loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: 200px;
+  }
+  
+  .emptyState {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    padding: 40px 20px;
+    
+    .emptyStateContent {
+      text-align: center;
+      max-width: 400px;
+      
+      .emptyIcon {
+        font-size: 64px;
+        margin-bottom: 20px;
+        opacity: 0.6;
+      }
+      
+      .emptyTitle {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0 0 12px 0;
+        color: $ms-color-neutralDark;
+      }
+      
+      .emptyDescription {
+        font-size: 16px;
+        color: $ms-color-neutralSecondary;
+        line-height: 1.5;
+        margin: 0 0 24px 0;
+      }
+      
+      .configureButton {
+        background-color: $ms-color-themePrimary;
+        color: $ms-color-white;
+        border: none;
+        border-radius: 2px;
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+        
+        &:hover {
+          background-color: $ms-color-themeDark;
+        }
+        
+        &:active {
+          background-color: $ms-color-themeDarker;
+        }
+        
+        &:focus {
+          outline: 2px solid $ms-color-themePrimary;
+          outline-offset: 2px;
+        }
+      }
+    }
+  }
+}
+
+// Global styles for content rendered from TinyMCE
+:global {
+  .accordionTabsComponent {
+    // Ensure consistent styling across all content areas
+    .mce-content-body {
+      font-family: $ms-font-family-base;
+      font-size: $ms-font-size-m;
+      line-height: 1.6;
+    }
+    
+    // Handle potential conflicts with SharePoint styles
+    .ms-rte-wpbox {
+      margin: 0;
+      padding: 0;
+    }
+    
+    // Ensure images are responsive
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 8px 0;
+    }
+    
+    // Style lists consistently
+    ul, ol {
+      margin: 8px 0 16px 24px;
+      padding: 0;
+      
+      li {
+        margin-bottom: 4px;
+        line-height: 1.5;
+      }
+    }
+    
+    // Style code blocks
+    pre, code {
+      background-color: $ms-color-neutralLighter;
+      border: 1px solid $ms-color-neutralLight;
+      border-radius: 3px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+    }
+    
+    pre {
+      padding: 12px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    
+    code {
+      padding: 2px 4px;
+      display: inline;
+    }
+    
+    // Style tables
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 16px 0;
+      
+      th, td {
+        border: 1px solid $ms-color-neutralLight;
+        padding: 8px 12px;
+        text-align: left;
+        vertical-align: top;
+      }
+      
+      th {
+        background-color: $ms-color-neutralLighter;
+        font-weight: 600;
+      }
+      
+      tr:nth-child(even) {
+        background-color: $ms-color-neutralLighterAlt;
+      }
+    }
+    
+    // Style blockquotes
+    blockquote {
+      border-left: 4px solid $ms-color-themePrimary;
+      margin: 16px 0;
+      padding: 8px 0 8px 16px;
+      color: $ms-color-neutralSecondary;
+      font-style: italic;
+      background-color: $ms-color-neutralLighterAlt;
+    }
+    
+    // Style horizontal rules
+    hr {
+      border: none;
+      height: 1px;
+      background-color: $ms-color-neutralLight;
+      margin: 20px 0;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .accordionTabsComponent {
+    .emptyState {
+      min-height: 250px;
+      padding: 20px;
+      
+      .emptyStateContent {
+        .emptyIcon {
+          font-size: 48px;
+          margin-bottom: 16px;
+        }
+        
+        .emptyTitle {
+          font-size: 20px;
+          margin-bottom: 8px;
+        }
+        
+        .emptyDescription {
+          font-size: 14px;
+          margin-bottom: 20px;
+        }
+        
+        .configureButton {
+          padding: 10px 20px;
+          font-size: 13px;
+        }
+      }
+    }
+    
+    .loadingContainer {
+      min-height: 150px;
+      padding: 20px;
+    }
+  }
+}
+
+// High contrast mode support
+@media screen and (-ms-high-contrast: active) {
+  .accordionTabsComponent {
+    .emptyState {
+      .emptyStateContent {
+        .configureButton {
+          border: 1px solid;
+        }
+      }
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .accordionTabsComponent {
+    .emptyState {
+      display: none;
+    }
+    
+    .loadingContainer {
+      display: none;
+    }
+  }
+}

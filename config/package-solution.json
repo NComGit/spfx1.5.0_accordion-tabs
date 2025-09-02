@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "accordion-tabs-web-part-client-side-solution",
+    "id": "d83100d3-3bc5-437f-a203-5f56a6405537",
+    "version": "1.0.0.0"
+  },
+  "paths": {
+    "zippedPackage": "solution/accordion-tabs-web-part.sppkg"
+  }
+}

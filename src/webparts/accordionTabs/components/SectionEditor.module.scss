@@ -1,0 +1,87 @@
+@import '~office-ui-fabric-react/dist/sass/References.scss';
+
+.modalContainer {
+  .modalHeader {
+    padding: 20px 20px 10px 20px;
+    border-bottom: 1px solid $ms-color-neutralLight;
+    
+    .modalTitle {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+      color: $ms-color-neutralDark;
+    }
+  }
+
+  .modalBody {
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+    
+    .fieldGroup {
+      margin-bottom: 20px;
+      
+      .fieldLabel {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: $ms-color-neutralDark;
+      }
+      
+      .editorContainer {
+        border: 1px solid $ms-color-neutralTertiary;
+        border-radius: 2px;
+        
+        &:focus-within {
+          border-color: $ms-color-themePrimary;
+        }
+      }
+    }
+  }
+
+  .modalFooter {
+    padding: 15px 20px 20px 20px;
+    border-top: 1px solid $ms-color-neutralLight;
+    text-align: right;
+  }
+
+  .loadingOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    
+    .spinner {
+      font-size: 16px;
+      color: $ms-color-themePrimary;
+      font-weight: 600;
+    }
+  }
+}
+
+// Modal width and positioning
+:global(.ms-Modal) {
+  .modalContainer {
+    width: 80%;
+    max-width: 800px;
+    min-width: 600px;
+    min-height: 400px;
+    position: relative;
+  }
+}
+
+@media (max-width: 768px) {
+  :global(.ms-Modal) {
+    .modalContainer {
+      width: 95%;
+      min-width: 320px;
+      max-width: none;
+    }
+  }
+}
