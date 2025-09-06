@@ -32,7 +32,7 @@ export default class AccordionTabsWebPart extends BaseClientSideWebPart<IAccordi
         onConfigureClick: this.onConfigureClick.bind(this),
         // Accordion settings
         accordionDefaultExpanded: this.properties.accordionDefaultExpanded || AccordionDefaultExpanded.First,
-        accordionChosenSection: this.properties.accordionChosenSection || 0,
+        accordionChosenSection: this.properties.accordionChosenSection || "",
         // Tabs settings
         tabsDefaultActive: this.properties.tabsDefaultActive || TabsDefaultActive.First,
         tabsChosenTab: this.properties.tabsChosenTab || ""
@@ -51,7 +51,7 @@ export default class AccordionTabsWebPart extends BaseClientSideWebPart<IAccordi
       this.properties.accordionDefaultExpanded = AccordionDefaultExpanded.First;
     }
     if (this.properties.accordionChosenSection === undefined) {
-      this.properties.accordionChosenSection = 0;
+      this.properties.accordionChosenSection = "";
     }
     if (this.properties.tabsDefaultActive === undefined) {
       this.properties.tabsDefaultActive = TabsDefaultActive.First;
@@ -90,7 +90,7 @@ export default class AccordionTabsWebPart extends BaseClientSideWebPart<IAccordi
         const sectionOptions = this.properties.sections
           .sort((a, b) => a.order - b.order)
           .map((section, index) => ({
-            key: index,
+            key: section.id,
             text: section.title || `Section ${index + 1}`
           }));
 
@@ -98,7 +98,7 @@ export default class AccordionTabsWebPart extends BaseClientSideWebPart<IAccordi
           PropertyPaneDropdown('accordionChosenSection', {
             label: "Choose section to expand",
             options: sectionOptions,
-            selectedKey: this.properties.accordionChosenSection || 0
+            selectedKey: this.properties.accordionChosenSection || ""
           })
         );
       }

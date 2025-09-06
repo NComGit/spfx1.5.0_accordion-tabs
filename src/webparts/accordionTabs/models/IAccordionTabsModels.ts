@@ -44,7 +44,7 @@ export interface IAccordionTabsWebPartProps {
   allowEdit: boolean;
   // Accordion settings
   accordionDefaultExpanded: AccordionDefaultExpanded;
-  accordionChosenSection: number; // Index of chosen section to expand
+  accordionChosenSection: string; // ID of chosen section to expand
   // Tabs settings
   tabsDefaultActive: TabsDefaultActive; // Type of default active tab
   tabsChosenTab: string; // ID of chosen tab when "Chosen" is selected
@@ -61,7 +61,7 @@ export interface IAccordionTabsProps {
   onConfigureClick: () => void;
   // Accordion settings
   accordionDefaultExpanded: AccordionDefaultExpanded;
-  accordionChosenSection: number;
+  accordionChosenSection: string;
   // Tabs settings
   tabsDefaultActive: TabsDefaultActive;
   tabsChosenTab: string;
@@ -85,7 +85,7 @@ export interface IAccordionViewProps {
   displayMode: number;
   onSectionsChanged: (sections: ISection[]) => void;
   accordionDefaultExpanded: AccordionDefaultExpanded;
-  accordionChosenSection: number;
+  accordionChosenSection: string;
 }
 
 /**

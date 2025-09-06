@@ -35,11 +35,26 @@ export class AccordionView extends React.Component<IAccordionViewProps, IAccordi
   }
 
   public componentDidUpdate(prevProps: IAccordionViewProps): void {
-    // Re-initialize expanded sections if sections or configuration changed
-    if (prevProps.sections !== this.props.sections ||
-        prevProps.accordionDefaultExpanded !== this.props.accordionDefaultExpanded ||
-        prevProps.accordionChosenSection !== this.props.accordionChosenSection) {
+    // Re-initialize expanded sections only if configuration changed or sections were added/removed
+    // Don't reinitialize for simple reordering (which moveSection handles correctly)
+    const sectionsChanged = prevProps.sections !== this.props.sections;
+    const configChanged = prevProps.accordionDefaultExpanded !== this.props.accordionDefaultExpanded ||
+                         prevProps.accordionChosenSection !== this.props.accordionChosenSection;
+    
+    if (configChanged) {
+      // Configuration changed - reinitialize expanded sections
       this.initializeExpandedSections();
+    } else if (sectionsChanged) {
+      // Check if sections were added/removed (not just reordered)
+      const prevSectionIds = prevProps.sections.map(s => s.id).sort();
+      const currentSectionIds = this.props.sections.map(s => s.id).sort();
+      const sectionIdsChanged = JSON.stringify(prevSectionIds) !== JSON.stringify(currentSectionIds);
+      
+      if (sectionIdsChanged) {
+        // Sections were added or removed - reinitialize expanded sections
+        this.initializeExpandedSections();
+      }
+      // For simple reordering, do nothing - preserve current expanded state
     }
   }
 
@@ -71,9 +86,15 @@ export class AccordionView extends React.Component<IAccordionViewProps, IAccordi
         break;
       
       case AccordionDefaultExpanded.Chosen:
-        if (accordionChosenSection >= 0 && accordionChosenSection < sortedSections.length) {
-          const chosenSection = sortedSections[accordionChosenSection];
-          newExpandedSections[chosenSection.id] = true;
+        // Find the section with the chosen section ID
+        if (accordionChosenSection) {
+          // Find the section with the matching ID
+          for (let i = 0; i < sortedSections.length; i++) {
+            if (sortedSections[i].id === accordionChosenSection) {
+              newExpandedSections[sortedSections[i].id] = true;
+              break;
+            }
+          }
         }
         break;
       
