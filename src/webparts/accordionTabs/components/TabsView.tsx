@@ -3,7 +3,7 @@ import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { ContextualMenu, IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { DisplayMode } from '@microsoft/sp-core-library';
-import { ITabsViewProps, ITabsViewState, ISection } from '../models/IAccordionTabsModels';
+import { ITabsViewProps, ITabsViewState, ISection, TabsDefaultActive } from '../models/IAccordionTabsModels';
 import { SectionEditor } from './SectionEditor';
 import styles from './TabsView.module.scss';
 
@@ -53,26 +53,51 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
   public componentDidUpdate(prevProps: ITabsViewProps): void {
     // Re-initialize active tab if sections or configuration changed
     if (prevProps.sections !== this.props.sections ||
-        prevProps.tabsDefaultActive !== this.props.tabsDefaultActive) {
+        prevProps.tabsDefaultActive !== this.props.tabsDefaultActive ||
+        prevProps.tabsChosenTab !== this.props.tabsChosenTab) {
       this.initializeActiveTab();
     }
   }
 
   private initializeActiveTab(): void {
-    const { sections, tabsDefaultActive } = this.props;
+    const { sections, tabsDefaultActive, tabsChosenTab } = this.props;
     
     if (sections.length === 0) {
       this.setState((prevState) => ({ ...prevState, activeTabIndex: 0 }));
       return;
     }
 
-    // Ensure the tabsDefaultActive is within bounds
-    let activeIndex = tabsDefaultActive || 0;
-    if (activeIndex >= sections.length) {
-      activeIndex = 0; // Fallback to first tab
-    }
-    if (activeIndex < 0) {
-      activeIndex = 0; // Ensure not negative
+    let activeIndex = 0;
+
+    switch (tabsDefaultActive) {
+      case TabsDefaultActive.First:
+        activeIndex = 0;
+        break;
+      
+      case TabsDefaultActive.Last:
+        activeIndex = sections.length - 1;
+        break;
+      
+      case TabsDefaultActive.Chosen:
+        // Find the section with the chosen tab ID
+        if (tabsChosenTab) {
+          // Find the index of the section with the matching ID
+          let chosenIndex = -1;
+          for (let i = 0; i < sections.length; i++) {
+            if (sections[i].id === tabsChosenTab) {
+              chosenIndex = i;
+              break;
+            }
+          }
+          activeIndex = chosenIndex >= 0 ? chosenIndex : 0; // Fallback to first tab if not found
+        } else {
+          activeIndex = 0; // Fallback to first tab if no chosen tab specified
+        }
+        break;
+      
+      default:
+        activeIndex = 0;
+        break;
     }
 
     this.setState((prevState) => ({ ...prevState, activeTabIndex: activeIndex }));

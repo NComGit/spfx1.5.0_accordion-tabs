@@ -10,7 +10,7 @@ import { escape } from '@microsoft/sp-lodash-subset';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 
-import { IAccordionTabsWebPartProps, ViewType, ISection, AccordionDefaultExpanded } from './models/IAccordionTabsModels';
+import { IAccordionTabsWebPartProps, ViewType, ISection, AccordionDefaultExpanded, TabsDefaultActive } from './models/IAccordionTabsModels';
 import { AccordionTabsComponent } from './components/AccordionTabsComponent';
 import { IAccordionTabsProps } from './models/IAccordionTabsModels';
 
@@ -34,7 +34,8 @@ export default class AccordionTabsWebPart extends BaseClientSideWebPart<IAccordi
         accordionDefaultExpanded: this.properties.accordionDefaultExpanded || AccordionDefaultExpanded.First,
         accordionChosenSection: this.properties.accordionChosenSection || 0,
         // Tabs settings
-        tabsDefaultActive: this.properties.tabsDefaultActive || 0
+        tabsDefaultActive: this.properties.tabsDefaultActive || TabsDefaultActive.First,
+        tabsChosenTab: this.properties.tabsChosenTab || ""
       }
     );
 
@@ -53,7 +54,10 @@ export default class AccordionTabsWebPart extends BaseClientSideWebPart<IAccordi
       this.properties.accordionChosenSection = 0;
     }
     if (this.properties.tabsDefaultActive === undefined) {
-      this.properties.tabsDefaultActive = 0;
+      this.properties.tabsDefaultActive = TabsDefaultActive.First;
+    }
+    if (this.properties.tabsChosenTab === undefined) {
+      this.properties.tabsChosenTab = "";
     }
 
     const viewTypeOptions = [
@@ -100,19 +104,34 @@ export default class AccordionTabsWebPart extends BaseClientSideWebPart<IAccordi
       }
     } else if (this.properties.viewType === ViewType.Tabs) {
       // Tabs-specific settings
-      if (this.properties.sections && this.properties.sections.length > 0) {
+      const tabsDefaultActiveOptions = [
+        { key: TabsDefaultActive.First, text: "First Tab" },
+        { key: TabsDefaultActive.Last, text: "Last Tab" },
+        { key: TabsDefaultActive.Chosen, text: "Chosen Tab" }
+      ];
+
+      conditionalFields.push(
+        PropertyPaneDropdown('tabsDefaultActive', {
+          label: "Default active tab",
+          options: tabsDefaultActiveOptions,
+          selectedKey: this.properties.tabsDefaultActive || TabsDefaultActive.First
+        })
+      );
+
+      // Show tab chooser only when "Chosen" is selected
+      if (this.properties.tabsDefaultActive === TabsDefaultActive.Chosen && this.properties.sections && this.properties.sections.length > 0) {
         const tabOptions = this.properties.sections
           .sort((a, b) => a.order - b.order)
           .map((section, index) => ({
-            key: index,
+            key: section.id,
             text: section.title || `Tab ${index + 1}`
           }));
 
         conditionalFields.push(
-          PropertyPaneDropdown('tabsDefaultActive', {
-            label: "Default active tab",
+          PropertyPaneDropdown('tabsChosenTab', {
+            label: "Choose tab to display",
             options: tabOptions,
-            selectedKey: this.properties.tabsDefaultActive || 0
+            selectedKey: this.properties.tabsChosenTab || ""
           })
         );
       }

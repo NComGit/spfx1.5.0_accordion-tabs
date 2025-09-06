@@ -109,12 +109,13 @@ export class AccordionTabsComponent extends React.Component<IAccordionTabsProps,
       
       case ViewType.Tabs:
         return (
-          <TabsView 
-            sections={sections}
-            displayMode={displayMode}
-            onSectionsChanged={this.onSectionsChanged}
-            tabsDefaultActive={tabsDefaultActive}
-          />
+        <TabsView 
+          sections={this.props.sections} 
+          displayMode={this.props.displayMode}
+          onSectionsChanged={this.props.onSectionsChanged}
+          tabsDefaultActive={this.props.tabsDefaultActive}
+          tabsChosenTab={this.props.tabsChosenTab}
+        />
         );
       
       default:

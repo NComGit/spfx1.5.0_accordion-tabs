@@ -17,6 +17,15 @@ export enum AccordionDefaultExpanded {
 }
 
 /**
+ * Enum for tabs default active options
+ */
+export enum TabsDefaultActive {
+  First = "first",
+  Last = "last",
+  Chosen = "chosen"
+}
+
+/**
  * Interface for individual section data
  */
 export interface ISection {
@@ -37,7 +46,8 @@ export interface IAccordionTabsWebPartProps {
   accordionDefaultExpanded: AccordionDefaultExpanded;
   accordionChosenSection: number; // Index of chosen section to expand
   // Tabs settings
-  tabsDefaultActive: number; // Index of default active tab
+  tabsDefaultActive: TabsDefaultActive; // Type of default active tab
+  tabsChosenTab: string; // ID of chosen tab when "Chosen" is selected
 }
 
 /**
@@ -53,7 +63,8 @@ export interface IAccordionTabsProps {
   accordionDefaultExpanded: AccordionDefaultExpanded;
   accordionChosenSection: number;
   // Tabs settings
-  tabsDefaultActive: number;
+  tabsDefaultActive: TabsDefaultActive;
+  tabsChosenTab: string;
 }
 
 /**
@@ -84,7 +95,8 @@ export interface ITabsViewProps {
   sections: ISection[];
   displayMode: number;
   onSectionsChanged: (sections: ISection[]) => void;
-  tabsDefaultActive: number;
+  tabsDefaultActive: TabsDefaultActive;
+  tabsChosenTab: string;
 }
 
 /**
