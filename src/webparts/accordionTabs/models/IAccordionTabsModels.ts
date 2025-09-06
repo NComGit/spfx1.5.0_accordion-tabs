@@ -146,6 +146,8 @@ export interface IAccordionViewState {
   expandedSections: { [key: string]: boolean };
   editingSection: ISection | null;
   showSectionEditor: boolean;
+  showDeleteConfirmation: boolean;
+  sectionToDelete: ISection | null;
 }
 
 /**
@@ -162,6 +164,8 @@ export interface ITabsViewState {
   isDragging: boolean;
   dragStartX: number;
   dragStartY: number;
+  showDeleteConfirmation: boolean;
+  sectionToDelete: ISection | null;
 }
 
 /**

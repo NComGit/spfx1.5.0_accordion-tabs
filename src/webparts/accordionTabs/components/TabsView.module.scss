@@ -6,6 +6,7 @@
     border-bottom: 2px solid "[theme:neutralLight, default: #edebe9]";
     background-color: "[theme:neutralLighter, default: #f3f2f1]";
     overflow-x: auto;
+    overflow-y: hidden;
     
     .tabHeader {
       background-color: "[theme:neutralLighter, default: #f3f2f1]";
@@ -233,7 +234,7 @@
 }
 
 .tabHeaders::-webkit-scrollbar-track {
-  background: "[theme:neutralLight, default: #edebe9]";
+  background: transparent;
 }
 
 .tabHeaders::-webkit-scrollbar-thumb {
@@ -243,4 +244,15 @@
 
 .tabHeaders::-webkit-scrollbar-thumb:hover {
   background: "[theme:neutralSecondary, default: #605e5c]";
+}
+
+// Hide scrollbar for Firefox
+.tabHeaders {
+  scrollbar-width: thin;
+  scrollbar-color: "[theme:neutralTertiary, default: #a19f9d]" transparent;
+}
+
+// Hide scrollbar completely when not scrolling
+.tabHeaders:not(:hover)::-webkit-scrollbar {
+  display: none;
 }

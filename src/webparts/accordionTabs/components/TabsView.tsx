@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { ContextualMenu, IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
+import { Dialog, DialogType, DialogFooter } from 'office-ui-fabric-react/lib/Dialog';
+import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { DisplayMode } from '@microsoft/sp-core-library';
 import { ITabsViewProps, ITabsViewState, ISection, TabsDefaultActive } from '../models/IAccordionTabsModels';
 import { SectionEditor } from './SectionEditor';
@@ -29,7 +31,9 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
       contextualMenuIndex: -1,
       isDragging: false,
       dragStartX: 0,
-      dragStartY: 0
+      dragStartY: 0,
+      showDeleteConfirmation: false,
+      sectionToDelete: null
     };
 
     // Bind methods
@@ -46,6 +50,9 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
+    this.showDeleteConfirmation = this.showDeleteConfirmation.bind(this);
+    this.hideDeleteConfirmation = this.hideDeleteConfirmation.bind(this);
+    this.confirmDelete = this.confirmDelete.bind(this);
   }
 
   public componentDidMount(): void {
@@ -177,9 +184,43 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
     }));
   }
 
+  private showDeleteConfirmation(section: ISection): void {
+    this.setState((prevState) => ({
+      ...prevState,
+      showDeleteConfirmation: true,
+      sectionToDelete: section
+    }));
+  }
+
+  private hideDeleteConfirmation(): void {
+    this.setState((prevState) => ({
+      ...prevState,
+      showDeleteConfirmation: false,
+      sectionToDelete: null
+    }));
+  }
+
+  private confirmDelete(): void {
+    if (this.state.sectionToDelete) {
+      const updatedSections = this.props.sections.filter(s => s.id !== this.state.sectionToDelete!.id);
+      this.props.onSectionsChanged(updatedSections);
+    }
+    this.hideDeleteConfirmation();
+  }
+
   private onDeleteSection(sectionId: string): void {
-    const updatedSections = this.props.sections.filter(s => s.id !== sectionId);
-    this.props.onSectionsChanged(updatedSections);
+    // Find section manually for TypeScript 2.4.2 compatibility
+    let sectionToDelete: ISection | null = null;
+    for (let i = 0; i < this.props.sections.length; i++) {
+      if (this.props.sections[i].id === sectionId) {
+        sectionToDelete = this.props.sections[i];
+        break;
+      }
+    }
+    
+    if (sectionToDelete) {
+      this.showDeleteConfirmation(sectionToDelete);
+    }
   }
 
   private onSectionSave(section: ISection): void {
@@ -486,6 +527,25 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
             beakWidth={16}
           />
         )}
+
+        <Dialog
+          hidden={!this.state.showDeleteConfirmation}
+          onDismiss={this.hideDeleteConfirmation}
+          dialogContentProps={{
+            type: DialogType.normal,
+            title: 'Confirm Deletion',
+            subText: this.state.sectionToDelete ? `Are you sure you want to delete the tab "${this.state.sectionToDelete.title}"? This action cannot be undone.` : ''
+          }}
+          modalProps={{
+            isBlocking: true,
+            containerClassName: 'ms-dialogMainOverride'
+          }}
+        >
+          <DialogFooter>
+            <PrimaryButton onClick={this.confirmDelete} text="Delete" />
+            <DefaultButton onClick={this.hideDeleteConfirmation} text="Cancel" />
+          </DialogFooter>
+        </Dialog>
       </div>
     );
   }
