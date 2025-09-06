@@ -40,7 +40,7 @@ export interface IAccordionTabsProps {
  * Interface for section editor props
  */
 export interface ISectionEditorProps {
-  section: ISection;
+  section: ISection | null;
   isVisible: boolean;
   onSave: (section: ISection) => void;
   onCancel: () => void;

@@ -228,6 +228,7 @@ export class AccordionView extends React.Component<IAccordionViewProps, IAccordi
 
         {showSectionEditor && (
           <SectionEditor
+            key={editingSection ? `edit-${editingSection.id}` : 'new-section'}
             section={editingSection}
             isVisible={showSectionEditor}
             onSave={this.onSectionSave}

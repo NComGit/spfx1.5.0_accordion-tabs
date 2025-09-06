@@ -254,6 +254,7 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
 
         {showSectionEditor && (
           <SectionEditor
+            key={editingSection ? `edit-${editingSection.id}` : 'new-section'}
             section={editingSection}
             isVisible={showSectionEditor}
             onSave={this.onSectionSave}
