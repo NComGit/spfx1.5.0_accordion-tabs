@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { DisplayMode } from '@microsoft/sp-core-library';
-import { IAccordionViewProps, IAccordionViewState, ISection } from '../models/IAccordionTabsModels';
+import { IAccordionViewProps, IAccordionViewState, ISection, AccordionDefaultExpanded } from '../models/IAccordionTabsModels';
 import { SectionEditor } from './SectionEditor';
 import styles from './AccordionView.module.scss';
 
@@ -31,14 +31,64 @@ export class AccordionView extends React.Component<IAccordionViewProps, IAccordi
   }
 
   public componentDidMount(): void {
-    // Expand first section by default
-    if (this.props.sections.length > 0) {
-      const firstSection = this.props.sections[0];
-      this.setState((prevState) => ({
-        ...prevState,
-        expandedSections: { [firstSection.id]: true }
-      }));
+    this.initializeExpandedSections();
+  }
+
+  public componentDidUpdate(prevProps: IAccordionViewProps): void {
+    // Re-initialize expanded sections if sections or configuration changed
+    if (prevProps.sections !== this.props.sections ||
+        prevProps.accordionDefaultExpanded !== this.props.accordionDefaultExpanded ||
+        prevProps.accordionChosenSection !== this.props.accordionChosenSection) {
+      this.initializeExpandedSections();
     }
+  }
+
+  private initializeExpandedSections(): void {
+    const { sections, accordionDefaultExpanded, accordionChosenSection } = this.props;
+    
+    if (sections.length === 0) {
+      return;
+    }
+
+    const sortedSections = [...sections].sort((a, b) => a.order - b.order);
+    let newExpandedSections: { [key: string]: boolean } = {};
+
+    switch (accordionDefaultExpanded) {
+      case AccordionDefaultExpanded.None:
+        // Keep all collapsed - newExpandedSections is already empty
+        break;
+      
+      case AccordionDefaultExpanded.First:
+        if (sortedSections.length > 0) {
+          newExpandedSections[sortedSections[0].id] = true;
+        }
+        break;
+      
+      case AccordionDefaultExpanded.All:
+        sortedSections.forEach(section => {
+          newExpandedSections[section.id] = true;
+        });
+        break;
+      
+      case AccordionDefaultExpanded.Chosen:
+        if (accordionChosenSection >= 0 && accordionChosenSection < sortedSections.length) {
+          const chosenSection = sortedSections[accordionChosenSection];
+          newExpandedSections[chosenSection.id] = true;
+        }
+        break;
+      
+      default:
+        // Fallback to first section
+        if (sortedSections.length > 0) {
+          newExpandedSections[sortedSections[0].id] = true;
+        }
+        break;
+    }
+
+    this.setState((prevState) => ({
+      ...prevState,
+      expandedSections: newExpandedSections
+    }));
   }
 
   private toggleSection(sectionId: string): void {

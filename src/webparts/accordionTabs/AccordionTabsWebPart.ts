@@ -2,14 +2,15 @@ import { Version } from '@microsoft/sp-core-library';
 import {
   BaseClientSideWebPart,
   IPropertyPaneConfiguration,
-  PropertyPaneChoiceGroup
+  PropertyPaneChoiceGroup,
+  PropertyPaneDropdown
 } from '@microsoft/sp-webpart-base';
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 
-import { IAccordionTabsWebPartProps, ViewType, ISection } from './models/IAccordionTabsModels';
+import { IAccordionTabsWebPartProps, ViewType, ISection, AccordionDefaultExpanded } from './models/IAccordionTabsModels';
 import { AccordionTabsComponent } from './components/AccordionTabsComponent';
 import { IAccordionTabsProps } from './models/IAccordionTabsModels';
 
@@ -28,11 +29,116 @@ export default class AccordionTabsWebPart extends BaseClientSideWebPart<IAccordi
         sections: this.properties.sections || [],
         displayMode: this.displayMode,
         onSectionsChanged: this.onSectionsChanged.bind(this),
-        onConfigureClick: this.onConfigureClick.bind(this)
+        onConfigureClick: this.onConfigureClick.bind(this),
+        // Accordion settings
+        accordionDefaultExpanded: this.properties.accordionDefaultExpanded || AccordionDefaultExpanded.First,
+        accordionChosenSection: this.properties.accordionChosenSection || 0,
+        // Tabs settings
+        tabsDefaultActive: this.properties.tabsDefaultActive || 0
       }
     );
 
     ReactDom.render(element, this.domElement);
+  }
+
+  protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+    // Ensure default values are set
+    if (!this.properties.viewType) {
+      this.properties.viewType = ViewType.Accordion;
+    }
+    if (!this.properties.accordionDefaultExpanded) {
+      this.properties.accordionDefaultExpanded = AccordionDefaultExpanded.First;
+    }
+    if (this.properties.accordionChosenSection === undefined) {
+      this.properties.accordionChosenSection = 0;
+    }
+    if (this.properties.tabsDefaultActive === undefined) {
+      this.properties.tabsDefaultActive = 0;
+    }
+
+    const viewTypeOptions = [
+      { key: ViewType.Accordion, text: strings.ViewTypeAccordion },
+      { key: ViewType.Tabs, text: strings.ViewTypeTabs }
+    ];
+
+    // Build conditional fields based on view type
+    const conditionalFields = [];
+
+    if (this.properties.viewType === ViewType.Accordion) {
+      // Accordion-specific settings
+      const accordionExpandedOptions = [
+        { key: AccordionDefaultExpanded.None, text: "No layers" },
+        { key: AccordionDefaultExpanded.First, text: "First layer" },
+        { key: AccordionDefaultExpanded.All, text: "All layers" },
+        { key: AccordionDefaultExpanded.Chosen, text: "Chosen layer" }
+      ];
+
+      conditionalFields.push(
+        PropertyPaneDropdown('accordionDefaultExpanded', {
+          label: "Default expanded layers",
+          options: accordionExpandedOptions,
+          selectedKey: this.properties.accordionDefaultExpanded || AccordionDefaultExpanded.First
+        })
+      );
+
+      // Show section chooser only when "Chosen" is selected
+      if (this.properties.accordionDefaultExpanded === AccordionDefaultExpanded.Chosen && this.properties.sections && this.properties.sections.length > 0) {
+        const sectionOptions = this.properties.sections
+          .sort((a, b) => a.order - b.order)
+          .map((section, index) => ({
+            key: index,
+            text: section.title || `Section ${index + 1}`
+          }));
+
+        conditionalFields.push(
+          PropertyPaneDropdown('accordionChosenSection', {
+            label: "Choose section to expand",
+            options: sectionOptions,
+            selectedKey: this.properties.accordionChosenSection || 0
+          })
+        );
+      }
+    } else if (this.properties.viewType === ViewType.Tabs) {
+      // Tabs-specific settings
+      if (this.properties.sections && this.properties.sections.length > 0) {
+        const tabOptions = this.properties.sections
+          .sort((a, b) => a.order - b.order)
+          .map((section, index) => ({
+            key: index,
+            text: section.title || `Tab ${index + 1}`
+          }));
+
+        conditionalFields.push(
+          PropertyPaneDropdown('tabsDefaultActive', {
+            label: "Default active tab",
+            options: tabOptions,
+            selectedKey: this.properties.tabsDefaultActive || 0
+          })
+        );
+      }
+    }
+
+    return {
+      pages: [
+        {
+          header: {
+            description: strings.PropertyPaneDescription
+          },
+          groups: [
+            {
+              groupName: strings.ViewConfigurationGroupName,
+              groupFields: [
+                PropertyPaneChoiceGroup('viewType', {
+                  label: strings.ViewTypeLabel,
+                  options: viewTypeOptions
+                }),
+                ...conditionalFields
+              ]
+            }
+          ]
+        }
+      ]
+    };
   }
 
   private onSectionsChanged(sections: ISection[]): void {
@@ -59,41 +165,6 @@ export default class AccordionTabsWebPart extends BaseClientSideWebPart<IAccordi
   protected getDataVersion(): Version {
     return Version.parse('1.0');
   }
-
-  protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    // Ensure viewType has a default value if not set
-    if (!this.properties.viewType) {
-      this.properties.viewType = ViewType.Accordion;
-    }
-
-    const viewTypeOptions = [
-      { key: ViewType.Accordion, text: strings.ViewTypeAccordion },
-      { key: ViewType.Tabs, text: strings.ViewTypeTabs }
-    ];
-
-    return {
-      pages: [
-        {
-          header: {
-            description: strings.PropertyPaneDescription
-          },
-          groups: [
-            {
-              groupName: strings.ViewConfigurationGroupName,
-              groupFields: [
-                PropertyPaneChoiceGroup('viewType', {
-                  label: strings.ViewTypeLabel,
-                  options: viewTypeOptions
-                })
-              ]
-            }
-          ]
-        }
-      ]
-    };
-  }
-
-
 
   protected getDisableReactivePropertyChanges(): boolean {
     return false;

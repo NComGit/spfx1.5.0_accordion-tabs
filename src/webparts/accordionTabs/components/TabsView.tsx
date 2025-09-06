@@ -31,15 +31,35 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
   }
 
   public componentDidMount(): void {
-    // Ensure active tab is within bounds
-    this.ensureValidActiveTab();
+    this.initializeActiveTab();
   }
 
   public componentDidUpdate(prevProps: ITabsViewProps): void {
-    // Update active tab if sections changed
-    if (prevProps.sections.length !== this.props.sections.length) {
-      this.ensureValidActiveTab();
+    // Re-initialize active tab if sections or configuration changed
+    if (prevProps.sections !== this.props.sections ||
+        prevProps.tabsDefaultActive !== this.props.tabsDefaultActive) {
+      this.initializeActiveTab();
     }
+  }
+
+  private initializeActiveTab(): void {
+    const { sections, tabsDefaultActive } = this.props;
+    
+    if (sections.length === 0) {
+      this.setState((prevState) => ({ ...prevState, activeTabIndex: 0 }));
+      return;
+    }
+
+    // Ensure the tabsDefaultActive is within bounds
+    let activeIndex = tabsDefaultActive || 0;
+    if (activeIndex >= sections.length) {
+      activeIndex = 0; // Fallback to first tab
+    }
+    if (activeIndex < 0) {
+      activeIndex = 0; // Ensure not negative
+    }
+
+    this.setState((prevState) => ({ ...prevState, activeTabIndex: activeIndex }));
   }
 
   private ensureValidActiveTab(): void {

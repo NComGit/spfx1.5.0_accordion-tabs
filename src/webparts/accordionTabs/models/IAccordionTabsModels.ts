@@ -7,6 +7,16 @@ export enum ViewType {
 }
 
 /**
+ * Enum for accordion default expanded options
+ */
+export enum AccordionDefaultExpanded {
+  None = "none",
+  First = "first", 
+  All = "all",
+  Chosen = "chosen"
+}
+
+/**
  * Interface for individual section data
  */
 export interface ISection {
@@ -23,6 +33,11 @@ export interface IAccordionTabsWebPartProps {
   viewType: ViewType;
   sections: ISection[];
   allowEdit: boolean;
+  // Accordion settings
+  accordionDefaultExpanded: AccordionDefaultExpanded;
+  accordionChosenSection: number; // Index of chosen section to expand
+  // Tabs settings
+  tabsDefaultActive: number; // Index of default active tab
 }
 
 /**
@@ -34,6 +49,11 @@ export interface IAccordionTabsProps {
   displayMode: number; // SPFx DisplayMode
   onSectionsChanged: (sections: ISection[]) => void;
   onConfigureClick: () => void;
+  // Accordion settings
+  accordionDefaultExpanded: AccordionDefaultExpanded;
+  accordionChosenSection: number;
+  // Tabs settings
+  tabsDefaultActive: number;
 }
 
 /**
@@ -53,6 +73,8 @@ export interface IAccordionViewProps {
   sections: ISection[];
   displayMode: number;
   onSectionsChanged: (sections: ISection[]) => void;
+  accordionDefaultExpanded: AccordionDefaultExpanded;
+  accordionChosenSection: number;
 }
 
 /**
@@ -62,6 +84,7 @@ export interface ITabsViewProps {
   sections: ISection[];
   displayMode: number;
   onSectionsChanged: (sections: ISection[]) => void;
+  tabsDefaultActive: number;
 }
 
 /**

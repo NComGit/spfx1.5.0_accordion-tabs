@@ -92,24 +92,29 @@ export class AccordionTabsComponent extends React.Component<IAccordionTabsProps,
   }
 
   private renderContent(): React.ReactElement<any> {
-    const { viewType, displayMode } = this.props;
+    const { viewType, displayMode, accordionDefaultExpanded, accordionChosenSection, tabsDefaultActive } = this.props;
     const { sections } = this.state;
-
-    const commonProps = {
-      sections: sections,
-      displayMode: displayMode,
-      onSectionsChanged: this.onSectionsChanged
-    };
 
     switch (viewType) {
       case ViewType.Accordion:
         return (
-          <AccordionView {...commonProps} />
+          <AccordionView 
+            sections={sections}
+            displayMode={displayMode}
+            onSectionsChanged={this.onSectionsChanged}
+            accordionDefaultExpanded={accordionDefaultExpanded}
+            accordionChosenSection={accordionChosenSection}
+          />
         );
       
       case ViewType.Tabs:
         return (
-          <TabsView {...commonProps} />
+          <TabsView 
+            sections={sections}
+            displayMode={displayMode}
+            onSectionsChanged={this.onSectionsChanged}
+            tabsDefaultActive={tabsDefaultActive}
+          />
         );
       
       default:
