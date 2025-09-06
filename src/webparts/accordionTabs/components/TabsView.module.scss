@@ -41,12 +41,12 @@
       .tabActions {
         display: flex;
         align-items: center;
-        gap: 2px;
+        margin-left: 8px;
         
         .actionButton {
           min-width: 24px;
           height: 24px;
-          font-size: 10px;
+          font-size: 12px;
           
           &:hover {
             background-color: "[theme:neutralTertiaryAlt, default: #c8c6c4]";

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
+import { ContextualMenu, IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { DisplayMode } from '@microsoft/sp-core-library';
 import { ITabsViewProps, ITabsViewState, ISection } from '../models/IAccordionTabsModels';
 import { SectionEditor } from './SectionEditor';
@@ -11,13 +12,22 @@ import styles from './TabsView.module.scss';
  */
 export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
 
+  private _optionsButtonElement: HTMLElement | null = null;
+
   constructor(props: ITabsViewProps) {
     super(props);
 
     this.state = {
       activeTabIndex: 0,
       editingSection: null,
-      showSectionEditor: false
+      showSectionEditor: false,
+      showContextualMenu: false,
+      contextualMenuTarget: null,
+      contextualMenuSection: null,
+      contextualMenuIndex: -1,
+      isDragging: false,
+      dragStartX: 0,
+      dragStartY: 0
     };
 
     // Bind methods
@@ -28,6 +38,12 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
     this.onSectionSave = this.onSectionSave.bind(this);
     this.onSectionCancel = this.onSectionCancel.bind(this);
     this.moveSection = this.moveSection.bind(this);
+    this.onShowContextualMenu = this.onShowContextualMenu.bind(this);
+    this.onHideContextualMenu = this.onHideContextualMenu.bind(this);
+    this.getContextualMenuItems = this.getContextualMenuItems.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
   }
 
   public componentDidMount(): void {
@@ -170,6 +186,140 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
     this.props.onSectionsChanged(sortedSections);
   }
 
+  private onShowContextualMenu(event: React.MouseEvent<HTMLButtonElement>, section: ISection, index: number): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Store the button element reference
+    this._optionsButtonElement = event.currentTarget as HTMLElement;
+    
+    this.setState((prevState) => ({
+      ...prevState,
+      showContextualMenu: true,
+      contextualMenuTarget: this._optionsButtonElement,
+      contextualMenuSection: section,
+      contextualMenuIndex: index
+    }));
+  }
+
+  private onHideContextualMenu(): void {
+    this.setState((prevState) => ({
+      ...prevState,
+      showContextualMenu: false,
+      contextualMenuTarget: null,
+      contextualMenuSection: null,
+      contextualMenuIndex: -1
+    }));
+  }
+
+  private getContextualMenuItems(): IContextualMenuItem[] {
+    const { contextualMenuSection, contextualMenuIndex } = this.state;
+    const { sections } = this.props;
+    
+    if (!contextualMenuSection) return [];
+
+    const sortedSections = [...sections].sort((a, b) => a.order - b.order);
+    const menuItems: IContextualMenuItem[] = [];
+
+    // Edit option
+    menuItems.push({
+      key: 'edit',
+      name: 'Edit',
+      iconProps: { iconName: 'Edit' },
+      onClick: () => {
+        this.onHideContextualMenu();
+        this.onEditSection(contextualMenuSection);
+      }
+    });
+
+    // Move left option (only show if not the first tab)
+    if (contextualMenuIndex > 0) {
+      menuItems.push({
+        key: 'moveLeft',
+        name: 'Move Left',
+        iconProps: { iconName: 'Back' },
+        onClick: () => {
+          this.onHideContextualMenu();
+          this.moveSection(contextualMenuSection.id, 'left');
+        }
+      });
+    }
+
+    // Move right option (only show if not the last tab)
+    if (contextualMenuIndex < sortedSections.length - 1) {
+      menuItems.push({
+        key: 'moveRight',
+        name: 'Move Right',
+        iconProps: { iconName: 'Forward' },
+        onClick: () => {
+          this.onHideContextualMenu();
+          this.moveSection(contextualMenuSection.id, 'right');
+        }
+      });
+    }
+
+    // Delete option
+    menuItems.push({
+      key: 'delete',
+      name: 'Delete',
+      iconProps: { iconName: 'Delete' },
+      onClick: () => {
+        this.onHideContextualMenu();
+        this.onDeleteSection(contextualMenuSection.id);
+      }
+    });
+
+    return menuItems;
+  }
+
+  private onMouseDown(event: React.MouseEvent<HTMLElement>): void {
+    event.preventDefault();
+    
+    this.setState((prevState) => ({
+      ...prevState,
+      isDragging: true,
+      dragStartX: event.clientX,
+      dragStartY: event.clientY
+    }));
+
+    // Add global mouse event listeners
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onMouseUp);
+  }
+
+  private onMouseMove(event: MouseEvent): void {
+    if (!this.state.isDragging) return;
+
+    // Simple drag feedback - you could enhance this with visual feedback
+    const deltaX = event.clientX - this.state.dragStartX;
+    const deltaY = event.clientY - this.state.dragStartY;
+    
+    // For now, we'll use a simple threshold to determine direction
+    if (Math.abs(deltaX) > 50) {
+      // Determine if we're moving left or right
+      const direction = deltaX > 0 ? 'right' : 'left';
+      
+      if (this.state.contextualMenuSection) {
+        this.moveSection(this.state.contextualMenuSection.id, direction);
+      }
+      
+      this.onMouseUp(event);
+    }
+  }
+
+  private onMouseUp(event: MouseEvent): void {
+    this.setState((prevState) => ({
+      ...prevState,
+      isDragging: false,
+      dragStartX: 0,
+      dragStartY: 0
+    }));
+
+    // Remove global mouse event listeners
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mouseup', this.onMouseUp);
+  }
+
   private renderSectionContent(content: string): React.ReactElement<any> {
     return (
       <div 
@@ -212,31 +362,9 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
               {isEditMode && (
                 <div className={styles.tabActions} onClick={(e) => e.stopPropagation()}>
                   <IconButton
-                    iconProps={{ iconName: 'Edit' }}
-                    title="Edit Section"
-                    onClick={() => this.onEditSection(section)}
-                    className={styles.actionButton}
-                  />
-                  {index > 0 && (
-                    <IconButton
-                      iconProps={{ iconName: 'Back' }}
-                      title="Move Left"
-                      onClick={() => this.moveSection(section.id, 'left')}
-                      className={styles.actionButton}
-                    />
-                  )}
-                  {index < sortedSections.length - 1 && (
-                    <IconButton
-                      iconProps={{ iconName: 'Forward' }}
-                      title="Move Right"
-                      onClick={() => this.moveSection(section.id, 'right')}
-                      className={styles.actionButton}
-                    />
-                  )}
-                  <IconButton
-                    iconProps={{ iconName: 'Delete' }}
-                    title="Delete Section"
-                    onClick={() => this.onDeleteSection(section.id)}
+                    iconProps={{ iconName: 'More' }}
+                    title="Section Options"
+                    onClick={(event: any) => this.onShowContextualMenu(event, section, index)}
                     className={styles.actionButton}
                   />
                 </div>
@@ -279,6 +407,18 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
             isVisible={showSectionEditor}
             onSave={this.onSectionSave}
             onCancel={this.onSectionCancel}
+          />
+        )}
+
+        {this.state.showContextualMenu && this.state.contextualMenuTarget && (
+          <ContextualMenu
+            target={this.state.contextualMenuTarget}
+            items={this.getContextualMenuItems()}
+            onDismiss={this.onHideContextualMenu}
+            isBeakVisible={true}
+            directionalHint={6} // DirectionalHint.bottomAutoEdge
+            gapSpace={0}
+            beakWidth={16}
           />
         )}
       </div>

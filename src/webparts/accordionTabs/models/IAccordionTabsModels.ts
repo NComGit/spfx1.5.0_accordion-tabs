@@ -143,6 +143,13 @@ export interface ITabsViewState {
   activeTabIndex: number;
   editingSection: ISection | null;
   showSectionEditor: boolean;
+  showContextualMenu: boolean;
+  contextualMenuTarget: Element | null;
+  contextualMenuSection: ISection | null;
+  contextualMenuIndex: number;
+  isDragging: boolean;
+  dragStartX: number;
+  dragStartY: number;
 }
 
 /**
