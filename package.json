@@ -20,7 +20,7 @@
     "office-ui-fabric-react": "5.131.0",
     "react": "15.6.2",
     "react-dom": "15.6.2",
-    "tinymce": "4.9.11",
+    "tinymce": "4.7.13",
     "@tinymce/tinymce-react": "2.6.0",
     "@types/webpack-env": "1.13.1",
     "@types/es6-promise": "0.0.33",

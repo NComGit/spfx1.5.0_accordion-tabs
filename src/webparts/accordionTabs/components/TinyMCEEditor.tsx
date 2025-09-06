@@ -1,6 +1,22 @@
 import * as React from 'react';
 import { ITinyMCEEditorProps } from '../models/IAccordionTabsModels';
 
+// Import TinyMCE from npm package instead of CDN
+import 'tinymce/tinymce.min.js';
+
+// Import required plugins
+import 'tinymce/themes/modern/theme.js';
+import 'tinymce/plugins/lists/plugin.js';
+import 'tinymce/plugins/textcolor/plugin.js';
+import 'tinymce/plugins/colorpicker/plugin.js';
+import 'tinymce/plugins/link/plugin.js';
+import 'tinymce/plugins/image/plugin.js';
+import 'tinymce/plugins/paste/plugin.js';
+
+// Import skin CSS
+import 'tinymce/skins/lightgray/skin.min.css';
+import 'tinymce/skins/lightgray/content.min.css';
+
 declare var tinymce: any;
 
 /**
@@ -297,22 +313,9 @@ export class TinyMCEEditor extends React.Component<ITinyMCEEditorProps, {}> {
 
 
   private initializeTinyMCE(): void {
-    // Check if TinyMCE is already loaded
-    if (typeof tinymce !== 'undefined') {
-      this.setupEditor();
-      return;
-    }
-
-    // Load TinyMCE from CDN - using 4.7.13 for better compatibility
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/tinymce@4.7.13/tinymce.min.js';
-    script.onload = () => {
-      this.setupEditor();
-    };
-    script.onerror = () => {
-      console.error('Failed to load TinyMCE');
-    };
-    document.head.appendChild(script);
+    // TinyMCE is now loaded via npm imports, so directly setup editor
+    console.log('Initializing TinyMCE from npm package');
+    this.setupEditor();
   }
 
   private setupEditor(): void {
@@ -344,8 +347,12 @@ export class TinyMCEEditor extends React.Component<ITinyMCEEditorProps, {}> {
       menubar: false,
       statusbar: false,
       
-      // Fix plugin loading - these are the exact plugins needed for each button
-      plugins: 'lists textcolor colorpicker link image code paste',
+      // Prevent TinyMCE from loading external resources
+      skin: false,
+      content_css: false,
+      
+      // Fix plugin loading - these are the exact plugins needed for each button (removed 'code' plugin)
+      plugins: 'lists textcolor colorpicker link image paste',
       
       // Updated toolbar using custom buttons that actually work
       toolbar: 'undo redo | customformat customfontsize | bold italic underline | customtextcolor custombgcolor | alignleft aligncenter alignright | bullist numlist | customimage',
