@@ -53,11 +53,28 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
   }
 
   public componentDidUpdate(prevProps: ITabsViewProps): void {
-    // Re-initialize active tab if sections or configuration changed
-    if (prevProps.sections !== this.props.sections ||
-        prevProps.tabsDefaultActive !== this.props.tabsDefaultActive ||
-        prevProps.tabsChosenTab !== this.props.tabsChosenTab) {
+    // Re-initialize active tab only if configuration changed or sections were added/removed
+    // Don't reinitialize for simple reordering (which moveSection handles correctly)
+    const sectionsChanged = prevProps.sections !== this.props.sections;
+    const configChanged = prevProps.tabsDefaultActive !== this.props.tabsDefaultActive ||
+                         prevProps.tabsChosenTab !== this.props.tabsChosenTab;
+    
+    if (configChanged) {
+      // Configuration changed - reinitialize active tab
       this.initializeActiveTab();
+    } else if (sectionsChanged) {
+      // Check if sections were added/removed (not just reordered)
+      const prevSectionIds = prevProps.sections.map(s => s.id).sort();
+      const currentSectionIds = this.props.sections.map(s => s.id).sort();
+      const sectionIdsChanged = JSON.stringify(prevSectionIds) !== JSON.stringify(currentSectionIds);
+      
+      if (sectionIdsChanged) {
+        // Sections were added or removed - reinitialize active tab
+        this.initializeActiveTab();
+      } else {
+        // Just reordering - ensure active tab is still valid but don't reset to default
+        this.ensureValidActiveTab();
+      }
     }
   }
 
