@@ -13,6 +13,8 @@ import styles from './TabsView.module.scss';
 export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
 
   private _optionsButtonElement: HTMLElement | null = null;
+  private _tabHeadersContainerRef: HTMLDivElement | null = null;
+  private _isInitialLoad: boolean = true;
 
   constructor(props: ITabsViewProps) {
     super(props);
@@ -100,7 +102,28 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
         break;
     }
 
-    this.setState((prevState) => ({ ...prevState, activeTabIndex: activeIndex }));
+    this.setState((prevState) => ({ ...prevState, activeTabIndex: activeIndex }), () => {
+      // Scroll to make the active tab visible after state update
+      // Use instant scroll on initial load, smooth animation for subsequent changes
+      this.scrollActiveTabIntoView(!this._isInitialLoad);
+      this._isInitialLoad = false; // Mark as no longer initial load
+    });
+  }
+
+  private scrollActiveTabIntoView(useAnimation: boolean = true): void {
+    // Use setTimeout to ensure the DOM has been updated
+    setTimeout(() => {
+      if (this._tabHeadersContainerRef && this.state.activeTabIndex >= 0) {
+        const activeTabElement = this._tabHeadersContainerRef.children[this.state.activeTabIndex] as HTMLElement;
+        if (activeTabElement) {
+          activeTabElement.scrollIntoView({
+            behavior: useAnimation ? 'smooth' : 'auto',
+            block: 'nearest',
+            inline: 'start'
+          });
+        }
+      }
+    }, 0);
   }
 
   private ensureValidActiveTab(): void {
@@ -375,7 +398,7 @@ export class TabsView extends React.Component<ITabsViewProps, ITabsViewState> {
     return (
       <div className={styles.tabsContainer}>
         {/* Tab Headers */}
-        <div className={styles.tabHeaders}>
+        <div className={styles.tabHeaders} ref={(ref) => { this._tabHeadersContainerRef = ref; }}>
           {sortedSections.map((section, index) => (
             <div 
               key={section.id}
