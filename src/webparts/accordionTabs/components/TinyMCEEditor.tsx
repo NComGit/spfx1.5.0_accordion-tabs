@@ -1,7 +1,33 @@
 import * as React from 'react';
 import { ITinyMCEEditorProps } from '../models/IAccordionTabsModels';
 
-declare var tinymce: any;
+// Import TinyMCE directly from node_modules
+import * as tinymce from 'tinymce/tinymce';
+
+// Import TinyMCE theme, plugins, and skin
+import 'tinymce/themes/modern/theme';
+import 'tinymce/plugins/advlist/plugin';
+import 'tinymce/plugins/autolink/plugin';
+import 'tinymce/plugins/lists/plugin';
+import 'tinymce/plugins/link/plugin';
+import 'tinymce/plugins/image/plugin';
+import 'tinymce/plugins/charmap/plugin';
+import 'tinymce/plugins/print/plugin';
+import 'tinymce/plugins/preview/plugin';
+import 'tinymce/plugins/anchor/plugin';
+import 'tinymce/plugins/searchreplace/plugin';
+import 'tinymce/plugins/visualblocks/plugin';
+import 'tinymce/plugins/code/plugin';
+import 'tinymce/plugins/fullscreen/plugin';
+import 'tinymce/plugins/insertdatetime/plugin';
+import 'tinymce/plugins/media/plugin';
+import 'tinymce/plugins/table/plugin';
+import 'tinymce/plugins/contextmenu/plugin';
+import 'tinymce/plugins/paste/plugin';
+
+// Import TinyMCE skin CSS
+import 'tinymce/skins/lightgray/skin.min.css';
+import 'tinymce/skins/lightgray/content.min.css';
 
 /**
  * TinyMCE 4.x Editor component for React 15.6.2
@@ -38,23 +64,13 @@ export class TinyMCEEditor extends React.Component<ITinyMCEEditorProps, {}> {
   }
 
   private initializeTinyMCE(): void {
-    // Ensure TinyMCE is loaded
-    if (typeof tinymce === 'undefined') {
-      // Load TinyMCE script dynamically
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/tinymce@4.9.11/tinymce.min.js';
-      script.onload = () => {
-        this.setupEditor();
-      };
-      document.head.appendChild(script);
-    } else {
-      this.setupEditor();
-    }
+    // TinyMCE is now imported locally and should be available
+    this.setupEditor();
   }
 
   private setupEditor(): void {
     const { height = 300, onEditorChange, value } = this.props;
-
+    
     tinymce.init({
       selector: `#${this.editorId}`,
       height: height,
@@ -68,10 +84,10 @@ export class TinyMCEEditor extends React.Component<ITinyMCEEditorProps, {}> {
         'alignleft aligncenter alignright alignjustify | ' +
         'bullist numlist outdent indent | link image | code',
       content_css: [
-        '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-        '//www.tinymce.com/css/codepen.min.css'
+        'https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i'
       ],
-      skin_url: 'https://cdn.jsdelivr.net/npm/tinymce@4.9.11/skins/lightgray',
+      // Skin CSS is now imported directly, no need to specify skin_url
+      skin: false,
       // Prevent auto focus that steals focus from other fields
       auto_focus: false,
       setup: (editor: any) => {
