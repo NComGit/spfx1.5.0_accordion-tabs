@@ -17,7 +17,6 @@ export class TinyMCEEditor extends React.Component<ITinyMCEEditorProps, {}> {
   }
 
   public componentDidMount(): void {
-    console.log('TinyMCE componentDidMount - initializing');
     this.initializeTinyMCE();
   }
 
@@ -28,22 +27,10 @@ export class TinyMCEEditor extends React.Component<ITinyMCEEditorProps, {}> {
   }
 
   public componentDidUpdate(prevProps: ITinyMCEEditorProps): void {
-    console.log('TinyMCE componentDidUpdate', {
-      prevValue: prevProps.value,
-      currentValue: this.props.value,
-      hasEditor: !!this.editor,
-      editorId: this.editorId
-    });
-
     // Update editor content if value changed externally
     if (prevProps.value !== this.props.value && this.editor) {
       const currentContent = this.editor.getContent();
-      console.log('TinyMCE updating content', {
-        currentContent,
-        newValue: this.props.value,
-        contentsDiffer: currentContent !== this.props.value
-      });
-
+      
       if (currentContent !== this.props.value) {
         this.editor.setContent(this.props.value || '');
       }
@@ -87,28 +74,17 @@ export class TinyMCEEditor extends React.Component<ITinyMCEEditorProps, {}> {
       skin_url: 'https://cdn.jsdelivr.net/npm/tinymce@4.9.11/skins/lightgray',
       // Prevent auto focus that steals focus from other fields
       auto_focus: false,
-      // Add delay to prevent immediate focus stealing
-      init_instance_callback: (editor: any) => {
-        console.log('TinyMCE init_instance_callback - preventing auto focus');
-      },
       setup: (editor: any) => {
         this.editor = editor;
         
         // Set initial content
         editor.on('init', () => {
-          console.log('TinyMCE editor init - setting content');
           editor.setContent(value || '');
-        });
-
-        // Prevent focus stealing on init
-        editor.on('focus', () => {
-          console.log('TinyMCE editor focus event');
         });
 
         // Handle content changes
         editor.on('change keyup', () => {
           const content = editor.getContent();
-          console.log('TinyMCE content changed via change/keyup');
           if (onEditorChange) {
             onEditorChange(content);
           }
@@ -117,7 +93,6 @@ export class TinyMCEEditor extends React.Component<ITinyMCEEditorProps, {}> {
         // Handle blur event to ensure content is saved
         editor.on('blur', () => {
           const content = editor.getContent();
-          console.log('TinyMCE blur event');
           if (onEditorChange) {
             onEditorChange(content);
           }

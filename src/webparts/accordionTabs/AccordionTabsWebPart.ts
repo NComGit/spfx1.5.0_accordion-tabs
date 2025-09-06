@@ -61,6 +61,11 @@ export default class AccordionTabsWebPart extends BaseClientSideWebPart<IAccordi
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+    // Ensure viewType has a default value if not set
+    if (!this.properties.viewType) {
+      this.properties.viewType = ViewType.Accordion;
+    }
+
     const viewTypeOptions = [
       { key: ViewType.Accordion, text: strings.ViewTypeAccordion },
       { key: ViewType.Tabs, text: strings.ViewTypeTabs }

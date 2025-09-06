@@ -18,12 +18,6 @@ export class SectionEditor extends React.Component<ISectionEditorProps, ISection
     const initialTitle = props.section ? props.section.title : '';
     const initialContent = props.section ? props.section.content : '';
     
-    console.log('SectionEditor CONSTRUCTOR', {
-      sectionId: props.section ? props.section.id : null,
-      initialTitle,
-      initialContent,
-      isVisible: props.isVisible
-    });
 
     this.state = {
       title: initialTitle,
@@ -43,27 +37,14 @@ export class SectionEditor extends React.Component<ISectionEditorProps, ISection
   }
 
   private onTitleFocus(): void {
-    console.log('SectionEditor TextField FOCUS - preventing blur');
-    // Prevent TinyMCE from stealing focus
-    setTimeout(() => {
-      // Small delay to ensure focus stays on title field
-    }, 10);
+    // Focus handler for title field
   }
 
   private onTitleBlur(): void {
-    console.log('SectionEditor TextField BLUR');
+    // Blur handler for title field
   }
 
   public componentDidUpdate(prevProps: ISectionEditorProps): void {
-    console.log('SectionEditor componentDidUpdate', {
-      prevVisible: prevProps.isVisible,
-      currentVisible: this.props.isVisible,
-      prevSectionId: prevProps.section ? prevProps.section.id : null,
-      currentSectionId: this.props.section ? this.props.section.id : null,
-      currentTitle: this.state.title,
-      currentContent: this.state.content
-    });
-
     // Only update state when we're actually switching between different sections
     // or when opening the modal for the first time
     const prevSectionId = prevProps.section ? prevProps.section.id : 'new';
@@ -75,30 +56,16 @@ export class SectionEditor extends React.Component<ISectionEditorProps, ISection
       const newTitle = this.props.section ? this.props.section.title : '';
       const newContent = this.props.section ? this.props.section.content : '';
       
-      console.log('SectionEditor RESETTING STATE in componentDidUpdate', {
-        reason: modalJustOpened ? 'modal opened' : 'section changed',
-        newTitle,
-        newContent,
-        sectionId: this.props.section ? this.props.section.id : null
-      });
-
       this.setState((prevState) => ({
         ...prevState,
         title: newTitle,
         content: newContent,
         hasChanges: false
       }));
-    } else {
-      console.log('SectionEditor SKIPPING state reset - no relevant prop changes');
     }
   }
 
   private onTitleChange(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string): void {
-    console.log('SectionEditor onTitleChange', {
-      newValue: newValue || '',
-      currentState: this.state.title
-    });
-
     this.setState((prevState) => ({
       ...prevState,
       title: newValue || '',
@@ -107,11 +74,6 @@ export class SectionEditor extends React.Component<ISectionEditorProps, ISection
   }
 
   private onTitleChangeSimple(newValue: string): void {
-    console.log('SectionEditor onTitleChangeSimple', {
-      newValue: newValue,
-      currentState: this.state.title
-    });
-
     this.setState((prevState) => ({
       ...prevState,
       title: newValue,
@@ -120,12 +82,6 @@ export class SectionEditor extends React.Component<ISectionEditorProps, ISection
   }
 
   private onContentChange(content: string): void {
-    console.log('SectionEditor onContentChange', {
-      newContent: content,
-      currentTitle: this.state.title,
-      currentContent: this.state.content
-    });
-
     this.setState((prevState) => ({
       ...prevState,
       content: content,
@@ -186,14 +142,6 @@ export class SectionEditor extends React.Component<ISectionEditorProps, ISection
   public render(): React.ReactElement<ISectionEditorProps> {
     const { isVisible, section } = this.props;
     const { title, content, isLoading, hasChanges } = this.state;
-    
-    console.log('SectionEditor RENDER', {
-      sectionId: section ? section.id : null,
-      title,
-      content: content.substring(0, 20) + '...',
-      isVisible,
-      hasChanges
-    });
     
     const modalTitle = section ? 'Edit Section' : 'Add New Section';
 
